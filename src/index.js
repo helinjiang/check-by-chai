@@ -1,11 +1,11 @@
 const ValueChecker = require('./value-checker');
 const checkByChai = require('./assertion');
 
-let valueChecker = new ValueChecker('用户ID', '110', {
+let valueChecker = new ValueChecker('用户ID', 110, {
   type: 'number',
   checker: function (expect) {
-    console.log('in checker', this.value);
-    expect(this.value + '').to.not.be.empty;
+    console.log('in checker', this.value, valueChecker.value);
+    expect(this.value + '').to.be.empty;
   }
 });
 
@@ -28,9 +28,25 @@ function check(valueChecker, styleName = 'expect') {
 
     result.push({
       rule: `该值的类型必须为${valueChecker.rules.type}`,
-      isValid: !!checkTypeResult,
+      isValid: !checkTypeResult,
       message: checkTypeResult && checkTypeResult.message || '',
       assertionError: checkTypeResult
+    });
+  }
+
+  // 校验自定义的checker
+  if (typeof valueChecker.rules.checker === 'function') {
+    let checkCheckerResult = checkByChai.runWithExpect(function (expect) {
+      valueChecker.rules.checker.call(valueChecker, expect);
+    });
+
+    console.log(checkCheckerResult);
+
+    result.push({
+      rule: `自定义校验器`,
+      isValid: !checkCheckerResult,
+      message: checkCheckerResult && checkCheckerResult.message || '',
+      assertionError: checkCheckerResult
     });
   }
 
