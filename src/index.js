@@ -52,6 +52,7 @@ class CheckByChai {
 
   check() {
     this._checkType();
+    this._checkIsRequired();
     this._checkChecker();
 
     return {
@@ -73,6 +74,46 @@ class CheckByChai {
       // console.log(checkResult);
 
       this._addResult(`该值的类型必须为${this.rules.type}`, checkResult);
+    }
+  }
+
+  /**
+   * 校验值的类型
+   * @private
+   */
+  _checkIsRequired() {
+    if (this.rules.isRequired === true) {
+      let checkResult = checkByChai.runWithExpect((function (expect) {
+        /**
+         * empty: http://chaijs.com/api/bdd/#method_empty
+         *
+         *  如果是数组或者字符串，则会比对其 length 属性，如果为0，则说明是 empty
+         *  expect([]).to.be.empty;
+         *  expect('').to.be.empty;
+         *
+         *  如果是 map 或者 set ，则会判断其 size 属性，如果为0，则说明是 empty
+         *  expect(new Set()).to.be.empty;
+         *  expect(new Map()).to.be.empty;
+         *
+         *  如果是非函数的对象 object，则判断其自有属性
+         *  expect({}).to.be.empty;
+         *
+         *  由于 empty 根据不同的类型来爬到，因此建议先判断类型再判断 empty
+         *  expect([]).to.be.an('array').that.is.empty;
+         *
+         */
+        if (this.rules.type === 'number') {
+          // number 类型的无须处理
+          return;
+        }
+
+        expect(this.value).to.not.be.empty;
+
+      }).bind(this));
+
+      console.log(checkResult);
+
+      this._addResult(`该值为非空值`, checkResult);
     }
   }
 
