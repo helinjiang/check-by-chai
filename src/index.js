@@ -1,38 +1,45 @@
-const chai = require('chai');
+const ValueChecker = require('./value-checker');
+const checkByChai = require('./assertion');
 
-/**
- * 使用 chai 断言库中的 Expect 写法来运行用户的代码
- *
- * @param {Function} customeCheckCall 用户的测试函数，第一个参数会传递 expect 方法，其他参数会透传
- * @param props
- * @return {*}
- */
-exports.runWithExpect = function (customeCheckCall, ...props) {
-  return runTest('expect', customeCheckCall, ...props);
-};
-
-/**
- * 使用 chai 断言库中的 Expect 写法来运行用户的代码
- *
- * @param {String} name 断言库的接口方式
- * @param {Function} customeCheckCall 用户的测试函数，第一个参数会传递 expect 方法，其他参数会透传
- * @param props
- * @return {*}
- */
-function runTest(name = 'expect', customeCheckCall, ...props) {
-  try {
-    switch (name) {
-      case 'assert':
-        return customeCheckCall(chai.assert, ...props);
-      default:
-        return customeCheckCall(chai.expect, ...props);
-    }
-  } catch (e) {
-    // 如果不是断言失败的错误，则将错误抛出，这里只处理断言的错误
-    if (e.name !== 'AssertionError') {
-      throw e;
-    }
-
-    return e;
+let valueChecker = new ValueChecker('用户ID', '110', {
+  type: 'number',
+  checker: function (expect) {
+    console.log('in checker', this.value);
+    expect(this.value + '').to.not.be.empty;
   }
+});
+
+/**
+ * 获取校验结果
+ * @param valueChecker
+ * @return {{retCode: number}}
+ */
+function check(valueChecker, styleName = 'expect') {
+  let result = {
+    list: []
+  };
+
+  if (typeof valueChecker.rules.type === 'string') {
+    let checkTypeResult = checkByChai.runWithExpect(function (expect) {
+      expect(valueChecker.value).to.be.a(valueChecker.rules.type);
+    });
+
+    console.log(checkTypeResult);
+
+    result.list.push({
+      rule: `该值的类型必须为${valueChecker.rules.type}`,
+      isValid: !!checkTypeResult,
+      message: checkTypeResult && checkTypeResult.message || '',
+      assertionError: checkTypeResult
+    });
+  }
+
+  return {
+    retCode: 0,
+    result: result
+  };
 }
+
+let result = check(valueChecker);
+
+console.log(result);
