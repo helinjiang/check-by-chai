@@ -2,8 +2,9 @@
   "name": "check-by-chai",
   "version": "0.0.1",
   "description": "check by chai",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
+    "prepublish": "babel src -d lib",
     "test": "mocha --reporter spec --recursive"
   },
   "repository": {
@@ -23,6 +24,10 @@
     "chai": "^4.1.2"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015-loose": "^8.0.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
     "mocha": "^4.0.1"
   }
 }
