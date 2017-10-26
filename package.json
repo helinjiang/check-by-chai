@@ -1,0 +1,22 @@
+{
+  "name": "check-by-chai",
+  "version": "0.0.1",
+  "description": "check by chai",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/helinjiang/check-by-chai.git"
+  },
+  "keywords": [
+    "chai"
+  ],
+  "author": "helinjiang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/helinjiang/check-by-chai/issues"
+  },
+  "homepage": "https://github.com/helinjiang/check-by-chai#readme"
+}
