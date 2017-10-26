@@ -15,10 +15,10 @@ let valueChecker = new ValueChecker('用户ID', '110', {
  * @return {{retCode: number}}
  */
 function check(valueChecker, styleName = 'expect') {
-  let result = {
-    list: []
-  };
+  // 校验结果的数组
+  let result = [];
 
+  // 校验类型
   if (typeof valueChecker.rules.type === 'string') {
     let checkTypeResult = checkByChai.runWithExpect(function (expect) {
       expect(valueChecker.value).to.be.a(valueChecker.rules.type);
@@ -26,7 +26,7 @@ function check(valueChecker, styleName = 'expect') {
 
     console.log(checkTypeResult);
 
-    result.list.push({
+    result.push({
       rule: `该值的类型必须为${valueChecker.rules.type}`,
       isValid: !!checkTypeResult,
       message: checkTypeResult && checkTypeResult.message || '',
